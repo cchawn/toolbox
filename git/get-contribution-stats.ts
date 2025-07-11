@@ -1,3 +1,5 @@
+#!/usr/bin/env -S deno run --allow-net --allow-env
+
 import { parseArgs } from 'jsr:@std/cli';
 import { Spinner } from 'jsr:@std/cli/unstable-spinner';
 import { Octokit } from 'npm:octokit';
