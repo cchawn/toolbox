@@ -1,5 +1,8 @@
 {
   "fmt": {
     "singleQuote": true
+  },
+  "tasks": {
+    "get-contribution-stats": "deno run --allow-net --allow-env ./github/get-contribution-stats.ts"
   }
 }
