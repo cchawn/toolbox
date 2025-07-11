@@ -1,0 +1,3 @@
+# direnv / dotenv files
+.env
+.envrc.local
