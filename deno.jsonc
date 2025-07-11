@@ -3,6 +3,7 @@
     "singleQuote": true
   },
   "tasks": {
-    "get-contribution-stats": "deno run --allow-net --allow-env ./github/get-contribution-stats.ts"
+    "get-contribution-stats": "deno run --allow-net --allow-env ./git/get-contribution-stats.ts",
+    "update-repos": "deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts $*"
   }
 }
