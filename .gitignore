@@ -1,3 +1,6 @@
 # direnv / dotenv files
 .env
 .envrc.local
+
+# temporary / output files
+*.csv

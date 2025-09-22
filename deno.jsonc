@@ -4,6 +4,7 @@
   },
   "tasks": {
     "get-contribution-stats": "deno run --allow-net --allow-env ./git/get-contribution-stats.ts",
-    "update-repos": "deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts"
+    "update-repos": "deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts",
+    "parse-transactions": "deno run --allow-read --allow-write --allow-env ./budget/transaction-parser.ts"
   }
 }

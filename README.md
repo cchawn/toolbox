@@ -74,6 +74,26 @@ deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts /path/
 - Pulls latest changes from remote
 - Optionally deletes local branches tracking deleted remote branches
 
+### Transaction Parser
+
+Parse CSV transaction files from multiple financial institutions and convert to unified budget format with auto-categorization.
+
+**Usage:**
+
+```bash
+# Using Deno task
+deno task parse-transactions /path/to/statements/directory
+
+# Direct execution
+deno run --allow-read --allow-write --allow-env ./budget/transaction-parser.ts /path/to/statements/directory
+```
+
+**Supported formats:**
+- TD Credit Card
+- Wealthsimple Credit Card & Investment
+- Amex Credit Card
+- Scotiabank Chequing
+
 ## Development
 
 To see all the available recipes, run `just` with no arguments:
