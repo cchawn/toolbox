@@ -4,11 +4,17 @@ A collection of CLI tools for day-to-day productivity.
 
 ## Install
 
-Download the latest binary from
-[GitHub Releases](https://github.com/cchawn/toolbox/releases) and add it to your
-`PATH`.
+### From GitHub Releases
 
-Or build from source:
+```bash
+# macOS (Apple Silicon)
+curl -Lo /usr/local/bin/toolbox https://github.com/cchawn/toolbox/releases/latest/download/toolbox-darwin-arm64 && chmod +x /usr/local/bin/toolbox
+
+# Linux (x86_64)
+curl -Lo /usr/local/bin/toolbox https://github.com/cchawn/toolbox/releases/latest/download/toolbox-linux-amd64 && chmod +x /usr/local/bin/toolbox
+```
+
+### From source
 
 ```bash
 brew install deno
