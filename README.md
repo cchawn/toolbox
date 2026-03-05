@@ -94,14 +94,13 @@ toolbox budget init-config [--force]
 Writes default mappings to `~/.config/toolbox/budget.json`. Edit this file to
 customize how transactions are categorized.
 
-### Cleanup
+#### `toolbox git cleanup-old`
 
-#### `toolbox cleanup old-dirs`
-
-Remove directories not modified in the last 180 days. Dry run by default.
+Remove git repositories not modified in the last 180 days. Only targets
+directories containing a `.git` folder. Dry run by default.
 
 ```bash
-toolbox cleanup old-dirs <directory> [--delete]
+toolbox git cleanup-old <directory> [--delete]
 ```
 
 **Options:**
