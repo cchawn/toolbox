@@ -1,6 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-run --allow-env
-
-import { parseArgs } from 'jsr:@std/cli';
+import { Command } from 'jsr:@cliffy/command@1';
 
 interface UpdateResult {
   processed: number;
@@ -162,8 +160,6 @@ async function getRepositories(
           path: repoPath,
           mainBranch,
         });
-      } else {
-        // Only print if running in verbose mode in the future
       }
     }
   } catch (error) {
@@ -236,103 +232,63 @@ async function updateRepository(
   return { success: true };
 }
 
-function showHelp() {
-  console.log(`
-Usage: update-local-repos.ts [options] <workspace_dir>
+export const updateReposCommand = new Command()
+  .description('Update all git repos in a workspace directory')
+  .arguments('<workspace_dir:string>')
+  .option('-c, --cleanup-branches', 'Delete branches tracking deleted remotes')
+  .action(async ({ cleanupBranches }, workspaceDir) => {
+    const options: UpdateOptions = {
+      cleanupBranches: cleanupBranches || false,
+    };
 
-Update all git repositories in a workspace directory by checking out the main branch, pulling latest changes, and optionally cleaning up old branches.
-
-Options:
-  -h, --help              Show this help message
-  -c, --cleanup-branches  Delete local branches that track deleted remote branches
-
-Arguments:
-  workspace_dir           Path to workspace directory (required)
-
-Examples:
-  deno task update-repos ~/Workspace
-  deno task update-repos ~/Projects --cleanup-branches
-  deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts /path/to/workspace --cleanup-branches
-`);
-}
-
-async function main() {
-  const args = parseArgs(Deno.args, {
-    boolean: ['help', 'cleanup-branches'],
-    alias: { h: 'help', c: 'cleanup-branches' },
-    stopEarly: true,
-  });
-
-  if (args.help) {
-    showHelp();
-    return;
-  }
-
-  const options: UpdateOptions = {
-    cleanupBranches: args['cleanup-branches'] || false,
-  };
-
-  // The first positional argument is the workspace directory
-  const workspaceDir = args._[0] ? String(args._[0]) : null;
-
-  if (!workspaceDir) {
-    console.error('❌ Error: Workspace directory is required.');
-    showHelp();
-    Deno.exit(1);
-  }
-
-  try {
-    await Deno.stat(workspaceDir);
-  } catch {
-    console.error(
-      `❌ Error: Workspace directory '${workspaceDir}' does not exist`,
-    );
-    Deno.exit(1);
-  }
-
-  console.log('Starting repository update process...');
-  console.log('==========================================');
-  console.log(`Workspace directory: ${workspaceDir}`);
-
-  const repositories = await getRepositories(workspaceDir);
-
-  if (repositories.length === 0) {
-    console.log('No git repositories found in the workspace directory.');
-    return;
-  }
-
-  const result: UpdateResult = {
-    processed: 0,
-    errors: 0,
-    skipped: 0,
-  };
-
-  for (const repo of repositories) {
-    const updateResult = await updateRepository(repo, options);
-    if (updateResult.success) {
-      result.processed++;
-    } else {
-      console.log(updateResult.error);
-      result.errors++;
+    try {
+      await Deno.stat(workspaceDir);
+    } catch {
+      console.error(
+        `❌ Error: Workspace directory '${workspaceDir}' does not exist`,
+      );
+      Deno.exit(1);
     }
-  }
 
-  console.log('');
-  console.log('==========================================');
-  console.log('Update process completed!');
-  console.log(`Repositories processed: ${result.processed}`);
-  console.log(`Errors encountered: ${result.errors}`);
+    console.log('Starting repository update process...');
+    console.log('==========================================');
+    console.log(`Workspace directory: ${workspaceDir}`);
 
-  if (result.errors > 0) {
-    console.log(
-      '⚠️  Some repositories had issues. Please review the output above.',
-    );
-    Deno.exit(1);
-  } else {
-    console.log('🎉 All repositories updated successfully!');
-  }
-}
+    const repositories = await getRepositories(workspaceDir);
 
-if (import.meta.main) {
-  await main();
-}
+    if (repositories.length === 0) {
+      console.log('No git repositories found in the workspace directory.');
+      return;
+    }
+
+    const result: UpdateResult = {
+      processed: 0,
+      errors: 0,
+      skipped: 0,
+    };
+
+    for (const repo of repositories) {
+      const updateResult = await updateRepository(repo, options);
+      if (updateResult.success) {
+        result.processed++;
+      } else {
+        console.log(updateResult.error);
+        result.errors++;
+      }
+    }
+
+    console.log('');
+    console.log('==========================================');
+    console.log('Update process completed!');
+    console.log(`Repositories processed: ${result.processed}`);
+    console.log(`Errors encountered: ${result.errors}`);
+
+    if (result.errors > 0) {
+      console.log(
+        '⚠️  Some repositories had issues. Please review the output above.',
+      );
+      Deno.exit(1);
+    } else {
+      console.log('🎉 All repositories updated successfully!');
+    }
+  });

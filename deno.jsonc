@@ -1,12 +1,15 @@
 {
+  "imports": {
+    "@cliffy/command": "jsr:@cliffy/command@1"
+  },
   "fmt": {
     "singleQuote": true
   },
+  "nodeModulesDir": "auto",
   "tasks": {
-    "setup": "deno run --allow-run --allow-env ./setup.ts",
-    "git:contribution-stats": "deno run --allow-net --allow-env ./git/get-contribution-stats.ts",
-    "git:update-repos": "deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts",
-    "budget:parse-transactions": "deno run --allow-read --allow-write --allow-env ./budget/transaction-parser.ts",
-    "cleanup:old-dirs": "deno run --allow-read --allow-write --allow-run --allow-env ./cleanup/cleanup-old-dirs.ts"
+    "dev": "deno run -A ./cli.ts",
+    "compile": "deno compile -A --node-modules-dir --output toolbox ./cli.ts",
+    "compile:linux": "deno compile -A --node-modules-dir --target x86_64-unknown-linux-gnu --output toolbox-linux ./cli.ts",
+    "compile:all": "deno task compile && deno task compile:linux"
   }
 }

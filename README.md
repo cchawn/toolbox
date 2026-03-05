@@ -1,97 +1,142 @@
 # Toolbox
 
-A collection of CLI scripts to aid in day-to-day productivity.
+A collection of CLI tools for day-to-day productivity.
 
-## Setup
+## Install
 
-Requires [Deno](https://deno.com/) (`brew install deno`).
+Download the latest binary from
+[GitHub Releases](https://github.com/cchawn/toolbox/releases) and add it to your
+`PATH`.
 
-Then run the setup task to install remaining dependencies:
+Or build from source:
 
 ```bash
-deno task setup
+brew install deno
+git clone https://github.com/cchawn/toolbox.git
+cd toolbox
+deno task compile
 ```
 
-## Available Tools
+## Usage
+
+```
+toolbox <group> <command> [options]
+```
+
+Run `toolbox --help` to see all commands, or `toolbox <group> --help` for
+commands in a group.
+
+## Commands
 
 ### Git
 
-#### `git:contribution-stats`
+#### `toolbox git contribution-stats`
 
-Get detailed contribution statistics for a GitHub user, including commits
-landed, pull requests opened/closed, reviews given, and currently open PRs.
+Get contribution statistics for a GitHub user.
 
 ```bash
-deno task git:contribution-stats --user <username> --days <number>
+toolbox git contribution-stats --user <username> --days <number>
 ```
 
 **Options:**
 
-- `--user, -u <username>`: GitHub username to get stats for (required)
-- `--days, -d <number>`: Number of days to look back (default: 7)
-- `--help, -h`: Show help message
+- `-u, --user <name>`: GitHub username (required)
+- `-d, --days <num>`: Days to look back (default: 7)
 
 **Environment Variables:**
 
 - `GITHUB_TOKEN`: GitHub personal access token (required)
 
-#### `git:update-repos`
+#### `toolbox git update-repos`
 
-Update all git repositories in a workspace directory by checking out the main
-branch, pulling latest changes, and optionally cleaning up old branches.
+Update all git repos in a workspace directory by checking out main, pulling
+latest, and optionally cleaning up stale branches.
 
 ```bash
-deno task git:update-repos /path/to/workspace [--cleanup-branches]
+toolbox git update-repos <directory> [--cleanup-branches]
 ```
 
 **Options:**
 
-- `--cleanup-branches, -c`: Delete local branches that track deleted remote
-  branches
-- `--help, -h`: Show help message
-
-**What it does:**
-
-- Checks for uncommitted changes (skips repos with changes)
-- Switches to main/master branch
-- Pulls latest changes from remote
-- Optionally deletes local branches tracking deleted remote branches
+- `-c, --cleanup-branches`: Delete local branches tracking deleted remotes
 
 ### Budget
 
-#### `budget:parse-transactions`
+#### `toolbox budget parse-transactions`
 
-Parse CSV transaction files from multiple financial institutions and convert to unified budget format with auto-categorization.
+Parse CSV transaction files from multiple financial institutions and convert to
+unified budget format with auto-categorization.
 
 ```bash
-deno task budget:parse-transactions /path/to/statements/directory
+toolbox budget parse-transactions <input_path> [--output <file>]
 ```
 
+**Options:**
+
+- `-o, --output <file>`: Output CSV file (default: auto-generated)
+- `-d, --directory`: Treat input as directory
+
 **Supported formats:**
+
 - TD Credit Card
 - Wealthsimple Credit Card & Investment
 - Amex Credit Card
 - Scotiabank Chequing
 
+#### `toolbox budget init-config`
+
+Generate a default budget config file for customizing merchant categorization.
+
+```bash
+toolbox budget init-config [--force]
+```
+
+Writes default mappings to `~/.config/toolbox/budget.json`. Edit this file to
+customize how transactions are categorized.
+
 ### Cleanup
 
-#### `cleanup:old-dirs`
+#### `toolbox cleanup old-dirs`
 
 Remove directories not modified in the last 180 days. Dry run by default.
 
 ```bash
-deno task cleanup:old-dirs /path/to/directory [--delete]
+toolbox cleanup old-dirs <directory> [--delete]
 ```
 
 **Options:**
 
-- `--delete`: Actually remove directories (default is dry run with confirmation prompt)
-- `--help, -h`: Show help message
+- `--delete`: Actually remove directories (default is dry run with confirmation
+  prompt)
+
+## Configuration
+
+Budget merchant mappings are stored in `~/.config/toolbox/budget.json`. Generate
+the default config with:
+
+```bash
+toolbox budget init-config
+```
+
+The config has two sections:
+
+- `exactMatches`: Map merchant names to categories (exact substring match)
+- `keywordPatterns`: Map categories to keyword arrays (broader matching)
 
 ## Development
 
-To see all available tasks:
+Requires [Deno](https://deno.com/) (`brew install deno`).
 
 ```bash
-deno task
+# Run in dev mode
+deno task dev -- <group> <command> [options]
+
+# Type check
+deno check cli.ts
+
+# Compile binary
+deno task compile
+
+# Compile for Linux
+deno task compile:linux
 ```
