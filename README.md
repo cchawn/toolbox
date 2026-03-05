@@ -4,19 +4,12 @@ A collection of CLI scripts to aid in day-to-day productivity.
 
 ## Setup
 
-To get started with this repo, ensure you have the CLI tool
-['just'](https://github.com/casey/just) installed:
+Requires [Deno](https://deno.com/) (`brew install deno`).
+
+Then run the setup task to install remaining dependencies:
 
 ```bash
-brew install just
-```
-
-Then, simply run the `setup` recipe. This will install all the necessary tools
-needed for interacting with this repository (setup linters, runtime
-environments, etc).
-
-```bash
-just setup
+deno task setup
 ```
 
 ## Available Tools
@@ -97,10 +90,8 @@ deno task cleanup:old-dirs /path/to/directory [--delete]
 
 ## Development
 
-To see all the available recipes, run `just` with no arguments:
+To see all available tasks:
 
-```
-$ just
-Available recipes:
-    setup              # Set up the repository for development
+```bash
+deno task
 ```
