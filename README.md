@@ -21,19 +21,15 @@ just setup
 
 ## Available Tools
 
-### GitHub Contribution Stats
+### Git
+
+#### `git:contribution-stats`
 
 Get detailed contribution statistics for a GitHub user, including commits
 landed, pull requests opened/closed, reviews given, and currently open PRs.
 
-**Usage:**
-
 ```bash
-# Using Deno task
-deno task get-contribution-stats --user <username> --days <number>
-
-# Direct execution
-deno run --allow-net --allow-env ./github/get-contribution-stats.ts --user <username> --days <number>
+deno task git:contribution-stats --user <username> --days <number>
 ```
 
 **Options:**
@@ -46,19 +42,13 @@ deno run --allow-net --allow-env ./github/get-contribution-stats.ts --user <user
 
 - `GITHUB_TOKEN`: GitHub personal access token (required)
 
-### Repository Update Script
+#### `git:update-repos`
 
 Update all git repositories in a workspace directory by checking out the main
 branch, pulling latest changes, and optionally cleaning up old branches.
 
-**Usage:**
-
 ```bash
-# Using Deno task
-deno task update-repos /path/to/workspace [--cleanup-branches]
-
-# Direct execution
-deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts /path/to/workspace [--cleanup-branches]
+deno task git:update-repos /path/to/workspace [--cleanup-branches]
 ```
 
 **Options:**
@@ -74,18 +64,14 @@ deno run --allow-read --allow-run --allow-env ./git/update-local-repos.ts /path/
 - Pulls latest changes from remote
 - Optionally deletes local branches tracking deleted remote branches
 
-### Transaction Parser
+### Budget
+
+#### `budget:parse-transactions`
 
 Parse CSV transaction files from multiple financial institutions and convert to unified budget format with auto-categorization.
 
-**Usage:**
-
 ```bash
-# Using Deno task
-deno task parse-transactions /path/to/statements/directory
-
-# Direct execution
-deno run --allow-read --allow-write --allow-env ./budget/transaction-parser.ts /path/to/statements/directory
+deno task budget:parse-transactions /path/to/statements/directory
 ```
 
 **Supported formats:**
@@ -93,6 +79,21 @@ deno run --allow-read --allow-write --allow-env ./budget/transaction-parser.ts /
 - Wealthsimple Credit Card & Investment
 - Amex Credit Card
 - Scotiabank Chequing
+
+### Cleanup
+
+#### `cleanup:old-dirs`
+
+Remove directories not modified in the last 180 days. Dry run by default.
+
+```bash
+deno task cleanup:old-dirs /path/to/directory [--delete]
+```
+
+**Options:**
+
+- `--delete`: Actually remove directories (default is dry run with confirmation prompt)
+- `--help, -h`: Show help message
 
 ## Development
 
