@@ -1,9 +1,18 @@
 import { Command } from 'jsr:@cliffy/command@1';
 import { Spinner } from 'jsr:@std/cli/unstable-spinner';
-import { Octokit } from 'npm:octokit';
-import type { components } from 'npm:@octokit/openapi-types';
+import { Octokit } from 'npm:@octokit/core@6';
 
-type PullRequest = components['schemas']['issue-search-result-item'];
+interface PullRequest {
+  title: string;
+  html_url: string;
+  state: string;
+  created_at: string;
+  updated_at: string;
+  closed_at: string | null;
+  pull_request?: {
+    merged_at: string | null;
+  };
+}
 
 function getEnv(key: string): string {
   const value = Deno.env.get(key);
@@ -20,8 +29,7 @@ async function searchGitHub(
   const result = await octokit.request('GET /search/issues', {
     q: query,
     per_page: 100,
-    advanced_search: 'true',
-  } as any);
+  });
   return result.data.items as PullRequest[];
 }
 
