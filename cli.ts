@@ -8,16 +8,13 @@ import { oldDirsCommand } from './commands/cleanup/old-dirs.ts';
 const git = new Command()
   .description('Git utilities')
   .command('contribution-stats', contributionStatsCommand)
-  .command('update-repos', updateReposCommand);
+  .command('update-repos', updateReposCommand)
+  .command('cleanup-old', oldDirsCommand);
 
 const budget = new Command()
   .description('Budget utilities')
   .command('parse-transactions', parseTransactionsCommand)
   .command('init-config', initConfigCommand);
-
-const cleanup = new Command()
-  .description('Cleanup utilities')
-  .command('old-dirs', oldDirsCommand);
 
 await new Command()
   .name('toolbox')
@@ -25,5 +22,4 @@ await new Command()
   .description('A collection of CLI tools for day-to-day productivity.')
   .command('git', git)
   .command('budget', budget)
-  .command('cleanup', cleanup)
   .parse(Deno.args);

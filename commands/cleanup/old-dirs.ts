@@ -8,6 +8,15 @@ interface DirInfo {
   modifiedAt: Date;
 }
 
+async function isGitRepo(dirPath: string): Promise<boolean> {
+  try {
+    await Deno.stat(`${dirPath}/.git`);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 async function getDirectories(targetDir: string): Promise<DirInfo[]> {
   const dirs: DirInfo[] = [];
 
@@ -15,6 +24,8 @@ async function getDirectories(targetDir: string): Promise<DirInfo[]> {
     if (!entry.isDirectory || entry.name.startsWith('.')) continue;
 
     const fullPath = `${targetDir}/${entry.name}`;
+    if (!await isGitRepo(fullPath)) continue;
+
     const stat = await Deno.stat(fullPath);
     if (stat.mtime) {
       dirs.push({
@@ -52,7 +63,7 @@ async function listAllDirs(targetDir: string): Promise<void> {
 }
 
 export const oldDirsCommand = new Command()
-  .description('Remove directories not modified in the last 180 days')
+  .description('Remove git repositories not modified in the last 180 days')
   .arguments('<target_dir:string>')
   .option('--delete', 'Actually remove directories (default is dry run)')
   .action(async (options, targetDir) => {
